@@ -21,7 +21,7 @@ import com.sunil.blog.payloads.UserDto;
 import com.sunil.blog.service.UserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
