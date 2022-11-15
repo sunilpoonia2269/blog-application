@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.sunil.blog.entities.Category;
 import com.sunil.blog.exceptions.ResourceNotFoundException;
+import com.sunil.blog.mapper.CategoryMapper;
 import com.sunil.blog.payloads.CategoryDto;
 import com.sunil.blog.repositories.CategoryRepo;
 import com.sunil.blog.service.CategoryService;
@@ -20,13 +21,13 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepo categoryRepo;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private CategoryMapper categoryMapper;
 
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
-        Category category = this.categoryDtoToCategory(categoryDto);
+        Category category = categoryMapper.categoryDtoToCategory(categoryDto);
         Category savedCategory = this.categoryRepo.save(category);
-        return this.categoryTocategoryDto(savedCategory);
+        return categoryMapper.categoryTocategoryDto(savedCategory);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setCategoryDescription(categoryDto.getCategoryDescription());
 
         Category updatedCategory = this.categoryRepo.save(category);
-        return this.categoryTocategoryDto(updatedCategory);
+        return categoryMapper.categoryTocategoryDto(updatedCategory);
     }
 
     @Override
@@ -53,29 +54,17 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getCategoryById(Integer categoryId) {
         Category category = this.categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", "" + categoryId));
-        return this.categoryTocategoryDto(category);
+        return categoryMapper.categoryTocategoryDto(category);
     }
 
     @Override
     public List<CategoryDto> getAllCategory() {
         List<Category> categories = this.categoryRepo.findAll();
 
-        List<CategoryDto> categoryDtos = categories.stream().map((category) -> this.categoryTocategoryDto(category))
+        List<CategoryDto> categoryDtos = categories.stream()
+                .map((category) -> categoryMapper.categoryTocategoryDto(category))
                 .collect(Collectors.toList());
         return categoryDtos;
-    }
-
-    ///
-    ///
-    // Private method used to map the classes in one other
-    private Category categoryDtoToCategory(CategoryDto categoryDto) {
-        Category category = this.modelMapper.map(categoryDto, Category.class);
-        return category;
-    }
-
-    private CategoryDto categoryTocategoryDto(Category category) {
-        CategoryDto categoryDto = this.modelMapper.map(category, CategoryDto.class);
-        return categoryDto;
     }
 
 }

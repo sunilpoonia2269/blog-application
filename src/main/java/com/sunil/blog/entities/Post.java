@@ -11,17 +11,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "post")
+@NoArgsConstructor
+@Getter
+@Setter
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(nullable = false)
     private String title;
+
     @Column(length = 1000, nullable = false)
     private String content;
+
     private String image;
     private Date addedDate;
 
