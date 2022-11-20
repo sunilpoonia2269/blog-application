@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.sunil.blog.mapper.CategoryMapper;
+import com.sunil.blog.mapper.CommentMapper;
 import com.sunil.blog.mapper.PostMapper;
 import com.sunil.blog.mapper.UserMapper;
 
@@ -28,5 +29,10 @@ public class BeanConfig {
     @Bean
     public PostMapper getPostMapper() {
         return new PostMapper();
+    }
+
+    @Bean
+    public CommentMapper getCommentMapper() {
+        return new CommentMapper();
     }
 }

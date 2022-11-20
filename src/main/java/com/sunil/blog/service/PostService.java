@@ -1,8 +1,7 @@
 package com.sunil.blog.service;
 
-import java.util.List;
-
 import com.sunil.blog.payloads.PostDto;
+import com.sunil.blog.payloads.PostResponse;
 
 public interface PostService {
 
@@ -12,14 +11,15 @@ public interface PostService {
 
     void deletePost(Integer id);
 
-    List<PostDto> getAllPost(Integer pageSize, Integer pageNumber, String sortBy);
+    PostResponse getAllPost(Integer pageSize, Integer pageNumber, String sortBy, String dir);
 
     PostDto getPostById(Integer id);
 
-    List<PostDto> getPostByCategory(Integer categoryId);
+    PostResponse getPostByCategory(Integer categoryId, Integer pageSize, Integer pageNumber, String sortBy,
+            String dir);
 
-    List<PostDto> getPostByUser(Integer userId);
+    PostResponse getPostByUser(Integer userId, Integer pageSize, Integer pageNumber, String sortBy, String dir);
 
-    List<PostDto> searchPost(String keyword);
+    PostResponse searchPost(String keyword, Integer pageSize, Integer pageNumber, String sortBy, String dir);
 
 }
