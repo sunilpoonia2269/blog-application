@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.sunil.blog.entities.Category;
 import com.sunil.blog.entities.Post;
@@ -154,6 +155,17 @@ public class PostServiceImpl implements PostService {
         postResponse.setTotalPages(postPage.getTotalPages());
         postResponse.setIsLastPage(postPage.isLast());
         return postResponse;
+    }
+
+    @Override
+    public void deletePostByUser(Integer id, User user) {
+        Post post = this.postRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", "" + id));
+
+        if (post.getUser().getId() != user.getId())
+            throw new AccessDeniedException("Access is denied for delete Post");
+
+        this.postRepo.delete(post);
+
     }
 
 }

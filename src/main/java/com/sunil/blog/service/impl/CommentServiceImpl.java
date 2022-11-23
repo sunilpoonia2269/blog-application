@@ -1,10 +1,12 @@
 package com.sunil.blog.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.sunil.blog.entities.Comment;
 import com.sunil.blog.entities.Post;
+import com.sunil.blog.entities.User;
 import com.sunil.blog.exceptions.ResourceNotFoundException;
 import com.sunil.blog.mapper.CommentMapper;
 import com.sunil.blog.mapper.PostMapper;
@@ -56,6 +58,17 @@ public class CommentServiceImpl implements CommentService {
                         "id", "" + commentId));
         this.commentRepo.delete(comment);
 
+    }
+
+    @Override
+    public void deleteCommentByUser(Integer commentId, User user) {
+        Comment comment = this.commentRepo.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment",
+                        "id", "" + commentId));
+
+        if (comment.getUser().getId() != user.getId())
+            throw new AccessDeniedException("Access Denied for Delete Comment");
+        this.commentRepo.delete(comment);
     }
 
 }

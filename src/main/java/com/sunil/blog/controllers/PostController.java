@@ -1,9 +1,9 @@
 package com.sunil.blog.controllers;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sunil.blog.config.AppConstants;
+import com.sunil.blog.entities.User;
 import com.sunil.blog.payloads.ApiResponse;
 import com.sunil.blog.payloads.PostDto;
 import com.sunil.blog.payloads.PostResponse;
 import com.sunil.blog.service.FileService;
 import com.sunil.blog.service.PostService;
+import com.sunil.blog.utils.RequestHelper;
 
 @RestController
 @RequestMapping("/post")
@@ -40,6 +43,9 @@ public class PostController {
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private RequestHelper requestHelper;
 
     @Value("${project.image}")
     private String path;
@@ -58,9 +64,20 @@ public class PostController {
         return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable Integer id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/delete/{id}")
+    public ResponseEntity<ApiResponse> deletePostByAdmin(@PathVariable Integer id) {
         this.postService.deletePost(id);
+        ApiResponse apiResponse = new ApiResponse("Post Deleted successfully", true);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deletePostByUser(@PathVariable Integer id, HttpServletRequest request) {
+
+        User currentUser = this.requestHelper.getUserFromRequest(request);
+
+        this.postService.deletePostByUser(id, currentUser);
         ApiResponse apiResponse = new ApiResponse("Post Deleted successfully", true);
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }

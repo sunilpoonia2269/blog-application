@@ -1,5 +1,6 @@
 package com.sunil.blog.service;
 
+import com.sunil.blog.entities.User;
 import com.sunil.blog.payloads.PostDto;
 import com.sunil.blog.payloads.PostResponse;
 
@@ -10,6 +11,8 @@ public interface PostService {
     PostDto updatePost(PostDto postDto, Integer id);
 
     void deletePost(Integer id);
+
+    void deletePostByUser(Integer id, User user);
 
     PostResponse getAllPost(Integer pageSize, Integer pageNumber, String sortBy, String dir);
 
