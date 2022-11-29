@@ -1,5 +1,6 @@
 package com.sunil.blog.exceptions;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +74,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse> accessDeniedExceptionHandler(AccessDeniedException exception) {
+        String message = exception.getLocalizedMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ApiResponse> sqlIntegrityConstraintViolationExceptionHandler(
+            SQLIntegrityConstraintViolationException exception) {
         String message = exception.getLocalizedMessage();
         ApiResponse apiResponse = new ApiResponse(message, false);
         return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);

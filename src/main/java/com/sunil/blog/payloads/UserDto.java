@@ -1,5 +1,8 @@
 package com.sunil.blog.payloads;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -33,4 +36,8 @@ public class UserDto {
 
     @Size(max = 255, message = "Limit exceeded for about")
     private String about;
+
+    @JsonProperty(access = Access.READ_ONLY)
+    private Set<RoleDto> roles = new HashSet<>();
+
 }

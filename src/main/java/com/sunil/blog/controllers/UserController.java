@@ -36,7 +36,8 @@ public class UserController {
     @Autowired
     private RequestHelper requestHelper;
 
-    @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin/add")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         UserDto createdUserDto = this.userService.createUser(userDto);
         return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
@@ -56,7 +57,7 @@ public class UserController {
         User currentUser = this.requestHelper.getUserFromRequest(request);
 
         if (currentUser.getId() != id)
-            throw new AccessDeniedException("Access is denied for delete User");
+            throw new AccessDeniedException("Access Denied - Trying to delete other user");
 
         this.userService.deleteUser(id);
 
